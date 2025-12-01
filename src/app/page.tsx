@@ -1,19 +1,15 @@
-'use client' // Important car on gère de l'état (State)
+'use client'
 
 import { useState, useEffect } from 'react'
 import { client } from "@/lib/sanity"
 import Quiz from "@/components/Quiz"
 import Hero from "@/components/Hero"
-
-// On doit récupérer les données côté client ou passer par un Server Component parent.
-// Pour simplifier aujourd'hui, on va fetcher dans un useEffect (méthode simple).
-// (La méthode "pro" serait de garder page.tsx en serveur et passer les data, mais on gère l'état d'affichage ici).
+import HomeContent from "@/components/HomeContent" // <--- Import
 
 export default function Home() {
   const [questions, setQuestions] = useState<any[]>([])
-  const [view, setView] = useState<'hero' | 'quiz'>('hero') // État pour savoir quoi afficher
+  const [view, setView] = useState<'hero' | 'quiz'>('hero')
 
-  // Charger les questions au démarrage
   useEffect(() => {
     const fetchQuestions = async () => {
       const data = await client.fetch(`*[_type == "question"] | order(_createdAt asc){ text, answers }`)
@@ -23,13 +19,19 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-black"> {/* bg-black pour être raccord */}
+      
+      {/* VUE 1 : ACCUEIL (Hero + Contenu) */}
       {view === 'hero' && (
-        <Hero onStart={() => setView('quiz')} />
+        <div className="animate-in fade-in duration-500">
+          <Hero onStart={() => setView('quiz')} />
+          <HomeContent />
+        </div>
       )}
 
+      {/* VUE 2 : QUIZ (Plein écran) */}
       {view === 'quiz' && (
-        <div className="animate-in fade-in duration-700">
+        <div className="animate-in fade-in duration-700 fixed inset-0 z-50 bg-black">
           {questions.length > 0 ? (
             <Quiz questions={questions} />
           ) : (

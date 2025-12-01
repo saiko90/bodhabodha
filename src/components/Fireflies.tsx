@@ -18,8 +18,7 @@ export default function Fireflies() {
   }, [])
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">      
       {/* 1. LUEUR D'ÉNERGIE (Gros nuage qui bouge) */}
       <motion.div 
         className="absolute w-[800px] h-[800px] bg-teal-500/20 rounded-full blur-[100px] mix-blend-screen"

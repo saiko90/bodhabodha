@@ -16,6 +16,7 @@ export default function Hero({ onStart }: { onStart: () => void }) {
 
   return (
     <div 
+      // J'ai rajouté 'overflow-hidden' ici vvv
       className="relative w-full h-screen overflow-hidden cursor-none bg-black"
       onMouseMove={updateMousePosition}
     >
@@ -48,7 +49,7 @@ export default function Hero({ onStart }: { onStart: () => void }) {
       <div className="absolute inset-0 w-full h-full z-20 pointer-events-none">
          <motion.div 
             className="w-full h-full"
-            style={{ scale: 1.02 }}
+            style={{ scale: 1.1 }}
             animate={{ x: mousePosition.x / -25, y: mousePosition.y / -25 }}
          >
              <img 
