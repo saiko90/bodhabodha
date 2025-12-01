@@ -18,6 +18,7 @@ async function getResult(slug: string) {
 
 export default async function ResultPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  await new Promise(resolve => setTimeout(resolve, 3000));
   const result = await getResult(slug)
   
   // @ts-ignore
