@@ -3,14 +3,14 @@ export const MOCK_PRODUCTS = {
     id: 'prod_red',
     name: 'Red Thread - Signature Tee',
     price: 29.99,
-    image: '/images/Tshirt_Red.jpg', 
+    image: '/images/Tshirt_Red.webp', 
     url: 'https://bodhabodha.com/shop/red'
   },
   orange: {
     id: 'prod_orange',
     name: 'Orange Juice - Flow Tee',
     price: 29.99,
-    image: '/images/Tshirt_Orange.jpg',
+    image: '/images/Tshirt_Orange.webp',
     url: 'https://bodhabodha.com/shop/orange'
   },
   yellow: {
@@ -31,21 +31,21 @@ export const MOCK_PRODUCTS = {
     id: 'prod_blue',
     name: 'True Blue - Authentic Tee',
     price: 29.99,
-    image: '/images/Tshirt_Blue.jpg',
+    image: '/images/Tshirt_Blue.webp',
     url: 'https://bodhabodha.com/shop/blue'
   },
   indigogo: {
     id: 'prod_indigo',
     name: 'Indi Gogo - Spirit Tee',
     price: 32.99,
-    image: '/images/Tshirt_Blue.jpg',
+    image: '/images/Tshirt_Blue.webp',
     url: 'https://bodhabodha.com/shop/indigo'
   },
   whitelight: {
     id: 'prod_white',
     name: 'White Light - Pure Tee',
     price: 32.99,
-    image: '/images/Tshirt_White.jpg',
+    image: '/images/Tshirt_White.webp',
     url: 'https://bodhabodha.com/shop/white'
   }
 }
