@@ -23,9 +23,44 @@ export default function Quiz({ questions }: { questions: any[] }) {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1)
     } else {
+      // C'est fini : On lance le calcul
       const final = calculateResult(newAnswers)
-      localStorage.setItem('aware_result', JSON.stringify(final))
-      setPendingResult(final)
+      
+      // LOGIQUE DE ROUTAGE INTELLIGENTE
+      let targetSlug = final.primaryStage;
+
+      // Cas 1 : Faible confiance -> Multiple Perspectives
+      if (final.confidence < 50) {
+        targetSlug = 'multiple';
+      }
+      // Cas 2 : Transition détectée -> Slug combiné (ex: red-orange)
+      else if (final.isTransition && final.secondaryStage) {
+        // On construit le slug combiné. 
+        // Attention : l'ordre doit correspondre à tes slugs dans Sanity (ex: toujours 'red-orange', jamais 'orange-red')
+        // Mon script d'import suit l'ordre logique des chakras/couleurs.
+        // Comme ta fonction 'calculateResult' trie par score, on doit s'assurer de l'ordre.
+        
+        // Pour simplifier, on va faire une map des transitions connues
+        const transitionMap: {[key: string]: string} = {
+            'red-orange': 'red-orange', 'orange-red': 'red-orange',
+            'orange-yellow': 'orange-yellow', 'yellow-orange': 'orange-yellow',
+            'yellow-green': 'yellow-green', 'green-yellow': 'yellow-green',
+            'green-trueblue': 'green-trueblue', 'trueblue-green': 'green-trueblue',
+            'trueblue-indigogo': 'trueblue-indigogo', 'indigogo-trueblue': 'trueblue-indigogo',
+            'indigogo-whitelight': 'indigogo-whitelight', 'whitelight-indigogo': 'indigogo-whitelight'
+        };
+        
+        const combo = `${final.primaryStage}-${final.secondaryStage}`;
+        if (transitionMap[combo]) {
+            targetSlug = transitionMap[combo];
+        }
+      }
+
+      // On sauvegarde l'objet complet avec le bon slug corrigé
+      const finalWithSlug = { ...final, slug: targetSlug };
+      
+      localStorage.setItem('aware_result', JSON.stringify(finalWithSlug))
+      setPendingResult(finalWithSlug) // Affiche le Gate avec le bon slug
     }
   }
 
