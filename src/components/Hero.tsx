@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 export default function Hero({ onStart }: { onStart: () => void }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   
-  // ON NE TOUCHE PAS AU SPRAY
+  //  SPRAY
   const MASK_SIZE = 600;
 
   const updateMousePosition = (e: React.MouseEvent) => {
@@ -16,7 +16,7 @@ export default function Hero({ onStart }: { onStart: () => void }) {
 
   return (
     <div 
-      // J'ai rajouté 'overflow-hidden' ici vvv
+      // 'overflow-hidden'
       className="relative w-full h-screen overflow-hidden cursor-none bg-black"
       onMouseMove={updateMousePosition}
     >
@@ -85,17 +85,20 @@ export default function Hero({ onStart }: { onStart: () => void }) {
       </motion.div>
 
       {/* --- VERSION MOBILE (Texte visible sans masque) --- */}
-      <div className="absolute inset-0 w-full h-full flex md:hidden flex-col items-center justify-center text-center p-6 z-30 bg-black/40">
-         <div className="max-w-4xl text-white">
-            <h1 className="text-5xl font-bold mb-6 tracking-tighter text-yellow-300 drop-shadow-lg">
+      <div className="absolute inset-0 w-full h-full flex md:hidden flex-col items-center justify-center text-center p-6 z-30">
+         {/* Fond noir semi-transparent pour détacher le texte des feuilles */}
+         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0" />
+         
+         <div className="max-w-4xl text-white relative z-10">
+            <h1 className="text-5xl font-bold mb-6 tracking-tighter text-yellow-300 drop-shadow-xl">
                 Conscious<br/>Coupling.
             </h1>
-            <p className="text-lg font-light leading-relaxed mb-10">
+            <p className="text-lg font-light leading-relaxed mb-10 text-white/90 drop-shadow-md">
                 Before you can consciously couple, you need to see clearly.<br/>
-                <strong>BodhaBodha</strong> reveals your consciousness lens.
+                <strong className="text-yellow-100">BodhaBodha</strong> reveals your consciousness lens.
             </p>
          </div>
-      </div> {/* <--- C'EST CETTE BALISE QUI MANQUAIT ! */}
+      </div>
 
       {/* --- COUCHE 5 : LE BOUTON (Hors du masque) --- */}
       <div className="absolute inset-x-0 bottom-16 flex justify-center z-40 pointer-events-none">

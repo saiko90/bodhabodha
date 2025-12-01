@@ -40,7 +40,8 @@ export default async function ResultPage({ params }: { params: Promise<{ slug: s
             <img 
                 src={result.imageUrl} 
                 alt="Atmosphere"
-                className="w-full h-full object-cover opacity-60 blur-[100px] scale-150"
+                // J'ai ajouté 'animate-in fade-in duration-1000'
+                className="w-full h-full object-cover opacity-50 blur-[80px] scale-125 animate-in fade-in duration-1000"
             />
         )}
         {/* Un voile noir pour la lisibilité */}

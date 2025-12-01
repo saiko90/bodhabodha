@@ -37,7 +37,7 @@ export default function EmailGate({ resultSlug }: { resultSlug: string }) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl text-center border border-gray-100"
+      className="relative z-50 max-w-md mx-auto bg-white p-8 rounded-3xl shadow-2xl text-center border-2 border-white/50"
     >
       <div className="flex justify-center mb-6">
         <img 
