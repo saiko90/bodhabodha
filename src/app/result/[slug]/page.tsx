@@ -5,6 +5,7 @@ import { MOCK_PRODUCTS } from "@/utils/products"
 import ProductDisplay from "@/components/ProductDisplay"
 import Fireflies from "@/components/Fireflies" 
 import SocialShare from "@/components/SocialShare"
+import Image from "next/image"
 
 async function getResult(slug: string) {
   const query = `*[_type == "result" && slug.current == $slug][0]{
@@ -38,11 +39,12 @@ export default async function ResultPage({ params }: { params: Promise<{ slug: s
       >
         {/* On utilise l'image du perso en fond géant flouté */}
         {result.imageUrl && (
-            <img 
-                src={result.imageUrl} 
+            <Image
+                src={result.imageUrl}
                 alt="Atmosphere"
-                // J'ai ajouté 'animate-in fade-in duration-1000'
-                className="w-full h-full object-cover opacity-50 blur-[80px] scale-125 animate-in fade-in duration-1000"
+                fill 
+                priority 
+                className="object-cover opacity-50 blur-[80px] scale-125 animate-in fade-in duration-1000"
             />
         )}
         {/* Un voile noir pour la lisibilité */}

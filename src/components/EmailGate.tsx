@@ -21,7 +21,6 @@ export default function EmailGate({ resultSlug }: { resultSlug: string }) {
       })
 
       if (res.ok) {
-        // Si l'inscription réussit, on redirige vers le résultat
         router.push(`/result/${resultSlug}`)
       } else {
         alert("Something went wrong. Please try again.")
@@ -58,7 +57,7 @@ export default function EmailGate({ resultSlug }: { resultSlug: string }) {
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+          className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-900 placeholder-gray-500"
         />
         
         <button

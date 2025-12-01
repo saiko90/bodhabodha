@@ -104,7 +104,7 @@ export default function Quiz({ questions }: { questions: any[] }) {
               />
             </div>
 
-            <div className="p-8 md:p-12">
+            <div className="p-8 md:p-12 pb-32">
               <div className="mb-10 text-center">
                 <span className="text-xs font-bold tracking-[0.2em] text-teal-700 uppercase opacity-70">
                   Question {currentIndex + 1} / {questions.length}
