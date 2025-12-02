@@ -55,7 +55,7 @@ export default function AboutPage() {
           </p>
           
           <p>
-            Drawing on her training in psychotherapy and transpersonal education, she helps clients go beyond trauma, beyond patterns, beyond the endless collecting of coping mechanisms and tools. Her work illuminates how <strong>consciousness itself</strong>—not techniques or strategies—creates genuine transformation in relationships.
+            Drawing on her training in psychotherapy and transpersonal education, she helps clients go beyond trauma, beyond patterns, beyond the endless collecting of coping mechanisms and tools. Her work illuminates how <strong>consciousness itself</strong>—not techniques or strategies—creates genuine transformation in relationship with self and others.
           </p>
 
           <div className="border-l-2 border-yellow-300/50 pl-6 my-10 italic text-white/80">

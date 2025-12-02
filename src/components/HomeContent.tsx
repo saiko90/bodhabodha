@@ -17,10 +17,12 @@ export default function HomeContent() {
             The patterns repeat even after years of deep work.
           </h2>
           <p className="text-xl text-gray-400 leading-relaxed mb-6">
-            You have done the work—therapy, recovery programs, plant medicine, spiritual practice. The work has value. The work matters.
+            This is what people say. They have done the work—therapy, recovery programs, plant medicine, spiritual practice. The work has value. The work matters.
           </p>
           <p className="text-xl text-white font-light leading-relaxed">
             And still: the same types. The same draining of time and vital energy. The same sense that something fundamental remains unchanged.
+            <br/><br/>
+            <strong>What shifts everything is consciousness itself.</strong>
           </p>
         </motion.div>
       </section>
@@ -40,10 +42,10 @@ export default function HomeContent() {
             </h3>
             <h2 className="text-4xl font-serif mb-6">Light Creates Movement</h2>
             <p className="text-gray-400 mb-4">
-              Your relational patterns begin to shift once consciousness is refined, once light reveals the actual shape of your perception.
+              Your own fixed frames begin to shift when light is shed on your relational dynamics. When consciousness illuminates the actual shape of your perception.
             </p>
             <p className="text-gray-400">
-              <strong>BodhaBodha</strong> does not fix your vision. It shows you which lens you are using. It reveals the shape of your current perception.
+              <strong>BODHABODHA</strong> does not fix your vision. It shows you which <strong>perceptual mode</strong> you are using. It reveals the shape of your current perception.
             </p>
           </motion.div>
           
@@ -61,20 +63,20 @@ export default function HomeContent() {
         </div>
       </section>
 
-      {/* SECTION 3: THE 7 LENSES */}
+      {/* SECTION 3: THE 7 PERCEPTUAL MODES (Updated Titles) */}
       <section className="py-24 px-6 bg-white/5">
         <div className="container mx-auto max-w-5xl">
-          <h2 className="text-4xl font-serif text-center mb-16">The 7 Consciousness Lenses</h2>
+          <h2 className="text-4xl font-serif text-center mb-16">The 7 Perceptual Modes</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { color: "bg-red-500", name: "Red Thread", desc: "Following the thread of pattern. Learning to focus." },
-              { color: "bg-orange-500", name: "Orange Juice", desc: "Everything feels fresh and alive. Chemistry creates clarity." },
-              { color: "bg-yellow-500", name: "Yellow Mellow", desc: "Reality settles in. Patterns repeat." },
-              { color: "bg-green-500", name: "Green Scene", desc: "The full picture emerges. Questions multiply." },
-              { color: "bg-blue-500", name: "True Blue", desc: "Building from within. Authentic expression." },
-              { color: "bg-indigo-500", name: "Indi Gogo", desc: "Abstract vision and practical action flow freely." },
-              { color: "bg-white", name: "White Light", desc: "Clear sight. Natural presence.", text: "text-black" },
+              { color: "bg-red-500", name: "Red Thread", desc: "Following the thread of pattern. Learning to focus. Something has shifted." },
+              { color: "bg-orange-500", name: "Orange Juice", desc: "Everything feels fresh and alive. Chemistry creates clarity. Possibility opens." },
+              { color: "bg-yellow-500", name: "Yellow Mellow", desc: "Reality settles in. What attracted now reveals complexity. Patterns repeat." },
+              { color: "bg-green-500", name: "Green Scene", desc: "The full picture emerges. Questions multiply. Confusion meets curiosity." },
+              { color: "bg-blue-500", name: "True Blue", desc: "Building from within. Authentic expression. Inner work deepens." },
+              { color: "bg-indigo-500", name: "Indi Gogo", desc: "Abstract vision and practical action flow freely. Inner and outer dialogue move naturally." },
+              { color: "bg-white", name: "White Light", desc: "Clear sight. Natural presence. Being becomes teaching.", text: "text-black" },
             ].map((lens, i) => (
               <motion.div 
                 key={i}

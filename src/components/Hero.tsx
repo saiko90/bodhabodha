@@ -70,15 +70,15 @@ export default function Hero({ onStart }: { onStart: () => void }) {
       >
         <div className="max-w-4xl pointer-events-none text-gray-900 flex flex-col items-center h-full justify-center">
           
-          {/* TITRE : Tiré vers le haut */}
-          <h1 className="text-6xl md:text-9xl font-bold mb-0 tracking-tighter -mt-40">
-            Conscious<br/>Coupling.
+          {/* NOUVEAU TITRE */}
+          <h1 className="text-5xl md:text-8xl font-bold mb-0 tracking-tighter -mt-40">
+            Welcome to<br/>Conscious Awareness.
           </h1>
 
-          {/* SOUS-TITRE : Poussé vers le bas */}
-          <p className="text-xl md:text-2xl text-gray-500 font-light max-w-2xl mx-auto leading-relaxed mt-40">
-            Before you can consciously couple, you need to see clearly. <br/>
-            <strong>BodhaBodha</strong> reveals which consciousness lens you're currently using.
+          {/* NOUVEAU SOUS-TITRE */}
+          <p className="text-lg md:text-xl text-gray-500 font-light max-w-3xl mx-auto leading-relaxed mt-40">
+            <strong>BODHABODHA</strong> reveals how you have been seeing—the unconscious patterns shaping every relationship in your life. 
+            When you see clearly—when awareness awakens—healthier, more mature interactions become possible.
           </p>
 
         </div>
