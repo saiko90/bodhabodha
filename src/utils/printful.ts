@@ -49,7 +49,6 @@ export async function getPrintfulProduct(searchTerm: string) {
     return {
       id: productToDisplay.id,
       name: productToDisplay.name,
-      price: null,
       image: productToDisplay.thumbnail_url,
       url: productToDisplay.external_url || '#' 
     };
