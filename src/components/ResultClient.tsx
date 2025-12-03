@@ -14,10 +14,10 @@ interface ResultClientProps {
     color: string
     imageUrl: string
   }
-  product: any
+  products: any[] // On reçoit maintenant une liste de produits
 }
 
-// STYLES PERSONNALISÉS POUR SANITY (Look Premium)
+// STYLES PERSONNALISÉS POUR SANITY (Look Premium Gold)
 const ptComponents = {
   block: {
     normal: ({ children }: any) => (
@@ -51,12 +51,11 @@ const ptComponents = {
   },
 }
 
-export default function ResultClient({ result, product }: ResultClientProps) {
+export default function ResultClient({ result, products }: ResultClientProps) {
   const [isReady, setIsReady] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
-    // Timer réduit à 2.5s pour être plus vif
     const timer = setTimeout(() => {
       if (!result.imageUrl || imageLoaded) {
         setIsReady(true)
@@ -98,7 +97,7 @@ export default function ResultClient({ result, product }: ResultClientProps) {
   return (
     <main className="relative min-h-screen text-white flex flex-col items-center justify-start p-4 md:p-8 overflow-x-hidden bg-black animate-in fade-in duration-1000">
       
-      {/* 1. FOND DYNAMIQUE ET SOMBRE */}
+      {/* 1. FOND DYNAMIQUE */}
       <div 
         className="fixed inset-0 z-0 transition-colors duration-1000"
         style={{ backgroundColor: result.color || '#111' }} 
@@ -111,7 +110,7 @@ export default function ResultClient({ result, product }: ResultClientProps) {
                 className="object-cover opacity-30 blur-[80px] scale-110"
             />
         )}
-        <div className="absolute inset-0 bg-black/60" /> {/* Assombrissement global */}
+        <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" /> 
       </div>
@@ -128,7 +127,6 @@ export default function ResultClient({ result, product }: ResultClientProps) {
           </span>
           
           <div className="relative mx-auto w-64 h-64 md:w-80 md:h-80 mb-10 group">
-             {/* Halo Pulse */}
              <div 
                 className="absolute inset-0 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-1000"
                 style={{ backgroundColor: result.color || 'white' }}
@@ -150,23 +148,27 @@ export default function ResultClient({ result, product }: ResultClientProps) {
           <div className="h-px w-40 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto opacity-70" />
         </div>
 
-        {/* CONTENU TEXTE (Glassmorphism Dark) */}
+        {/* CONTENU TEXTE */}
         <div className="bg-black/30 backdrop-blur-xl rounded-3xl p-6 md:p-12 border border-white/10 shadow-2xl animate-in slide-in-from-bottom-10 duration-1000 delay-500">
           <div className="prose-lg md:prose-xl mx-auto text-center font-light">
             <PortableText value={result.description} components={ptComponents} />
           </div>
         </div>
 
-        {/* SHOP SECTION */}
+        {/* 3. SHOP SECTION (GRILLE DE 3) */}
         <div className="mt-28">
             <div className="flex items-center justify-center gap-6 mb-12 opacity-80">
                 <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold-500" />
-                <span className="uppercase tracking-[0.3em] text-xs text-gold-100 font-serif">The Artifact</span>
+                <span className="uppercase tracking-[0.3em] text-xs text-gold-100 font-serif">The Bodha Collection</span>
                 <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold-500" />
             </div>
             
-            {/* On passe le produit ici */}
-            <ProductDisplay product={product} />
+            {/* GRILLE */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {products && products.map((product, index) => (
+                 <ProductDisplay key={product.id || index} product={product} delay={index * 0.2} />
+              ))}
+            </div>
         </div>
 
         {/* FOOTER */}
