@@ -7,7 +7,6 @@ import { PortableText } from '@portabletext/react'
 import ProductDisplay from "@/components/ProductDisplay"
 import Fireflies from "@/components/Fireflies"
 
-// On définit les types pour les props
 interface ResultClientProps {
   result: {
     title: string
@@ -18,34 +17,62 @@ interface ResultClientProps {
   product: any
 }
 
+// STYLES PERSONNALISÉS POUR SANITY (Look Premium)
+const ptComponents = {
+  block: {
+    normal: ({ children }: any) => (
+      <p className="mb-6 text-lg md:text-xl leading-relaxed text-gray-300 font-sans font-light tracking-wide mix-blend-plus-lighter">
+        {children}
+      </p>
+    ),
+    h3: ({ children }: any) => (
+      <h3 className="text-2xl md:text-4xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-gold-100 to-gold-500 mt-16 mb-8 border-b border-gold-500/20 pb-4">
+        {children}
+      </h3>
+    ),
+    h4: ({ children }: any) => (
+      <h4 className="text-xl md:text-2xl font-serif text-gold-100 mt-10 mb-4">
+        {children}
+      </h4>
+    ),
+    blockquote: ({ children }: any) => (
+      <blockquote className="relative border-l-4 border-gold-500 pl-6 py-4 my-10 italic text-xl md:text-2xl text-gold-100 bg-white/5 rounded-r-xl font-serif shadow-lg">
+        <span className="absolute top-0 left-2 text-4xl text-gold-500 opacity-50">"</span>
+        {children}
+      </blockquote>
+    ),
+  },
+  marks: {
+    strong: ({ children }: any) => (
+      <strong className="font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+        {children}
+      </strong>
+    ),
+  },
+}
+
 export default function ResultClient({ result, product }: ResultClientProps) {
   const [isReady, setIsReady] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
-    // 1. On lance un chronomètre minimum de 3 secondes pour l'effet "Mystique"
+    // Timer réduit à 2.5s pour être plus vif
     const timer = setTimeout(() => {
-      // On ne débloque que si l'image est AUSSI chargée (ou s'il n'y en a pas)
       if (!result.imageUrl || imageLoaded) {
         setIsReady(true)
       }
-    }, 3000)
-
+    }, 2500)
     return () => clearTimeout(timer)
   }, [imageLoaded, result.imageUrl])
 
-  // Fonction appelée quand l'image est physiquement chargée par le navigateur
   const handleImageLoad = () => {
     setImageLoaded(true)
-    // Si les 3 secondes sont déjà passées, on débloque tout de suite
-    // Sinon, le useEffect le fera à la fin du timer
   }
 
-  // --- ECRAN DE CHARGEMENT (Pendant qu'on prépare tout) ---
+  // --- ECRAN DE CHARGEMENT ---
   if (!isReady) {
     return (
-      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center text-white transition-opacity duration-700">
-        {/* On charge l'image en "cachette" (invisible) pour qu'elle soit prête */}
+      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center text-white">
         {result.imageUrl && (
           <Image
             src={result.imageUrl}
@@ -53,108 +80,103 @@ export default function ResultClient({ result, product }: ResultClientProps) {
             fill
             className="opacity-0"
             priority
-            onLoad={handleImageLoad} // C'est ici qu'on détecte la fin du téléchargement
+            onLoad={handleImageLoad}
           />
         )}
-        
-        {/* L'animation visuelle */}
         <div className="relative w-24 h-24 mb-8">
-          <div className="absolute inset-0 border-4 border-yellow-300/30 rounded-full animate-ping" />
-          <div className="absolute inset-0 border-4 border-yellow-300 rounded-full animate-pulse" />
+          <div className="absolute inset-0 border-t-2 border-gold-500 rounded-full animate-spin" />
+          <div className="absolute inset-2 border-b-2 border-white/30 rounded-full animate-spin-slow" />
         </div>
-        <h2 className="text-2xl font-serif text-yellow-100 animate-pulse tracking-widest uppercase">
-          Revealing your Lens...
+        <h2 className="text-xl font-serif text-gold-300 animate-pulse tracking-[0.3em] uppercase">
+          Revelations...
         </h2>
       </div>
     )
   }
 
-  // --- ECRAN DE RÉSULTAT (S'affiche instantanément car tout est prêt) ---
+  // --- ECRAN DE RÉSULTAT ---
   return (
-    <main className="relative min-h-screen text-white flex flex-col items-center justify-center p-4 overflow-hidden bg-black animate-in fade-in duration-1000">
+    <main className="relative min-h-screen text-white flex flex-col items-center justify-start p-4 md:p-8 overflow-x-hidden bg-black animate-in fade-in duration-1000">
       
-      {/* 1. FOND */}
+      {/* 1. FOND DYNAMIQUE ET SOMBRE */}
       <div 
-        className="absolute inset-0 z-0 transition-colors duration-1000"
-        style={{ backgroundColor: result.color || '#000' }} 
+        className="fixed inset-0 z-0 transition-colors duration-1000"
+        style={{ backgroundColor: result.color || '#111' }} 
       >
         {result.imageUrl && (
             <Image 
                 src={result.imageUrl} 
                 alt="Atmosphere"
                 fill
-                className="object-cover opacity-50 blur-[80px] scale-125"
+                className="object-cover opacity-30 blur-[80px] scale-110"
             />
         )}
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/60" /> {/* Assombrissement global */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" /> 
       </div>
 
-      {/* 2. PARTICULES */}
       <Fireflies />
 
-      {/* 3. CARTE */}
-      <div className="relative z-10 max-w-4xl w-full bg-white/10 backdrop-blur-2xl rounded-[3rem] p-8 md:p-16 border border-white/20 shadow-[0_0_80px_rgba(0,0,0,0.6)] my-10 animate-in slide-in-from-bottom-10 duration-1000">
+      {/* 2. CONTENU PRINCIPAL */}
+      <div className="relative z-10 max-w-3xl w-full mt-12 mb-20">
         
-        <div className="text-center mb-12">
-          <span className="uppercase tracking-[0.3em] text-xs md:text-sm font-bold opacity-80 mb-6 block text-white/80">
-            Your Consciousness Lens
+        {/* EN-TÊTE */}
+        <div className="text-center mb-16 animate-in slide-in-from-top-10 duration-1000 delay-300">
+          <span className="inline-block py-1 px-4 border border-gold-500/30 rounded-full text-[10px] md:text-xs uppercase tracking-[0.4em] text-gold-300 mb-8 bg-black/40 backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.1)]">
+            Your Archetype
           </span>
           
-          {/* IMAGE DU PERSONNAGE */}
-          {result.imageUrl ? (
-             <div className="mb-10 flex justify-center">
-                <div className="relative group">
-                    <div 
-                        className="absolute inset-0 blur-3xl opacity-60 rounded-full group-hover:opacity-80 transition-opacity duration-500"
-                        style={{ backgroundColor: result.color || 'white' }}
-                    />
-                    <Image 
-                        src={result.imageUrl} 
-                        alt={result.title}
-                        width={320}
-                        height={320}
-                        className="relative w-48 h-48 md:w-80 md:h-80 object-cover rounded-full shadow-2xl border-4 border-white/10"
-                    />
-                </div>
-             </div>
-          ) : (
-            <div className="mb-10 flex justify-center">
-                <div 
-                    className="w-48 h-48 md:w-64 md:h-64 rounded-full shadow-2xl border-4 border-white/10 flex items-center justify-center"
-                    style={{ backgroundColor: result.color }}
-                >
-                    <span className="text-4xl">✨</span>
-                </div>
-            </div>
-          )}
+          <div className="relative mx-auto w-64 h-64 md:w-80 md:h-80 mb-10 group">
+             {/* Halo Pulse */}
+             <div 
+                className="absolute inset-0 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-1000"
+                style={{ backgroundColor: result.color || 'white' }}
+             />
+             {result.imageUrl && (
+                <Image 
+                    src={result.imageUrl} 
+                    alt={result.title}
+                    fill
+                    className="object-cover rounded-full shadow-2xl border border-white/10 relative z-10"
+                />
+             )}
+          </div>
 
-          <h1 className="text-5xl md:text-8xl font-bold mt-4 mb-6 tracking-tighter drop-shadow-xl text-white">
+          <h1 className="text-5xl md:text-8xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-br from-gold-100 via-gold-300 to-gold-700 drop-shadow-sm tracking-tight mb-6">
             {result.title}
           </h1>
           
-          <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto rounded-full" />
+          <div className="h-px w-40 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto opacity-70" />
         </div>
 
-        {/* CONTENU TEXTE */}
-        <div className="prose prose-lg md:prose-xl prose-invert mx-auto leading-relaxed text-center font-light text-white/90">
-          <PortableText value={result.description} />
+        {/* CONTENU TEXTE (Glassmorphism Dark) */}
+        <div className="bg-black/30 backdrop-blur-xl rounded-3xl p-6 md:p-12 border border-white/10 shadow-2xl animate-in slide-in-from-bottom-10 duration-1000 delay-500">
+          <div className="prose-lg md:prose-xl mx-auto text-center font-light">
+            <PortableText value={result.description} components={ptComponents} />
+          </div>
         </div>
 
-        {/* SHOP */}
-        <div className="my-16 border-t border-white/10 pt-12">
-          <h2 className="text-center text-sm md:text-base font-bold mb-12 uppercase tracking-[0.2em] opacity-60">
-            Commemorate your Journey
-          </h2>
-          <ProductDisplay product={product} />
+        {/* SHOP SECTION */}
+        <div className="mt-28">
+            <div className="flex items-center justify-center gap-6 mb-12 opacity-80">
+                <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold-500" />
+                <span className="uppercase tracking-[0.3em] text-xs text-gold-100 font-serif">The Artifact</span>
+                <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold-500" />
+            </div>
+            
+            {/* On passe le produit ici */}
+            <ProductDisplay product={product} />
         </div>
 
-        {/* RETAKE */}
-        <div className="mt-12 text-center">
+        {/* FOOTER */}
+        <div className="mt-24 text-center pb-10">
             <Link 
                 href="/" 
-                className="inline-block text-sm uppercase tracking-widest opacity-50 hover:opacity-100 hover:text-white transition-all duration-300 border-b border-transparent hover:border-white/50 pb-1"
+                className="group relative inline-flex flex-col items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/40 hover:text-gold-300 transition-colors duration-500"
             >
-              Retake Assessment
+              <span>Restart the cycle</span>
+              <span className="h-px w-0 bg-gold-500 group-hover:w-full transition-all duration-500" />
             </Link>
         </div>
 
