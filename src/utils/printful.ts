@@ -1,6 +1,20 @@
 // src/utils/printful.ts
 
 const PRINTFUL_API_URL = 'https://api.printful.com';
+const SHOPIFY_STORE_URL = 'https://bodhabodha.myshopify.com/products';
+
+// Petit utilitaire pour transformer "Titre Du Produit" en "titre-du-produit" (slug)
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')        // Remplace les espaces par des tirets
+    .replace(/[^\w\-]+/g, '')    // Enlève les caractères spéciaux (sauf tirets)
+    .replace(/\-\-+/g, '-')      // Évite les doubles tirets
+    .replace(/^-+/, '')          // Coupe les tirets au début
+    .replace(/-+$/, '');         // Coupe les tirets à la fin
+}
 
 function shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -10,14 +24,13 @@ function shuffleArray(array: any[]) {
     return array;
 }
 
-// Nouvelle fonction : On récupère TOUT le catalogue
 export async function getAllPrintfulProducts() {
   const token = process.env.PRINTFUL_ACCESS_TOKEN;
 
   if (!token) return null;
 
   try {
-    // On demande jusqu'à 100 produits pour être tranquille
+    // On récupère les produits
     const res = await fetch(
       `${PRINTFUL_API_URL}/store/products?limit=100`, 
       {
@@ -25,7 +38,7 @@ export async function getAllPrintfulProducts() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        next: { revalidate: 60 } // Cache d'une minute
+        next: { revalidate: 60 } 
       }
     );
 
@@ -35,16 +48,23 @@ export async function getAllPrintfulProducts() {
 
     if (!products || products.length === 0) return null;
 
-    // On mélange tout pour le fun
     products = shuffleArray(products);
 
-    // On retourne TOUT (pas de .slice ici)
-    return products.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      image: p.thumbnail_url,
-      url: p.external_url || '#' 
-    }));
+    // C'EST ICI QUE LA MAGIE OPÈRE :
+    return products.map((p: any) => {
+        
+        // On génère le lien Shopify manuellement
+        // Ex: "BODHA Hoodie" devient "https://bodhabodha.myshopify.com/products/bodha-hoodie"
+        const generatedUrl = `${SHOPIFY_STORE_URL}/${slugify(p.name)}`;
+
+        return {
+            id: p.id,
+            name: p.name,
+            image: p.thumbnail_url,
+            // On force l'URL générée, car celle de Printful (p.external_url) est souvent vide ou mauvaise
+            url: generatedUrl 
+        };
+    });
 
   } catch (error) {
     console.error("❌ Erreur Fetch Printful:", error);
