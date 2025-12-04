@@ -9,11 +9,11 @@ function slugify(text: string) {
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')        // Remplace les espaces par des tirets
-    .replace(/[^\w\-]+/g, '')    // Enlève les caractères spéciaux (sauf tirets)
-    .replace(/\-\-+/g, '-')      // Évite les doubles tirets
-    .replace(/^-+/, '')          // Coupe les tirets au début
-    .replace(/-+$/, '');         // Coupe les tirets à la fin
+    .replace(/\s+/g, '-')        
+    .replace(/[^\w\-]+/g, '')    
+    .replace(/\-\-+/g, '-')      
+    .replace(/^-+/, '')          
+    .replace(/-+$/, '');        
 }
 
 function shuffleArray(array: any[]) {
@@ -50,18 +50,14 @@ export async function getAllPrintfulProducts() {
 
     products = shuffleArray(products);
 
-    // C'EST ICI QUE LA MAGIE OPÈRE :
     return products.map((p: any) => {
         
-        // On génère le lien Shopify manuellement
-        // Ex: "BODHA Hoodie" devient "https://bodhabodha.myshopify.com/products/bodha-hoodie"
         const generatedUrl = `${SHOPIFY_STORE_URL}/${slugify(p.name)}`;
 
         return {
             id: p.id,
             name: p.name,
             image: p.thumbnail_url,
-            // On force l'URL générée, car celle de Printful (p.external_url) est souvent vide ou mauvaise
             url: generatedUrl 
         };
     });

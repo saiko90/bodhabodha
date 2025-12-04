@@ -42,7 +42,6 @@ export default function AboutPage() {
           </p>
         </motion.div>
 
-        {/* ... (Le reste de ton contenu Bio reste identique) ... */}
         {/* CONTENU BIO */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

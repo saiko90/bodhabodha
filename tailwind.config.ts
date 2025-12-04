@@ -9,12 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        // On définit nos polices ici
         serif: ["var(--font-playfair)", "serif"], 
         sans: ["var(--font-lato)", "sans-serif"],
       },
       colors: {
-        // Voici la palette GOLD qui manquait
         gold: {
           100: '#F9F1D8', // Très clair (texte)
           300: '#E6C985', // Doré moyen
@@ -29,7 +27,7 @@ const config: Config = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'), // Assure-toi d'avoir fait: npm install @tailwindcss/typography
+    require('@tailwindcss/typography'), 
   ],
 };
 export default config;

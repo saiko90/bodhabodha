@@ -11,7 +11,7 @@ export default function Fireflies() {
       id: i,
       left: Math.random() * 100,
       top: Math.random() * 100,
-      size: Math.random() * 4 + 2, // Taille entre 2px et 6px
+      size: Math.random() * 4 + 2, 
       duration: Math.random() * 10 + 5
     }))
     setFireflies(flies)
@@ -43,16 +43,16 @@ export default function Fireflies() {
             height: fly.size
           }}
           animate={{
-            y: [0, -150, 0], // Monte plus haut
+            y: [0, -150, 0], 
             x: [0, Math.random() * 100 - 50, 0],
-            opacity: [0, 1, 0], // Apparaît et disparaît
+            opacity: [0, 1, 0], 
             scale: [0.5, 1.5, 0.5]
           }}
           transition={{
             duration: fly.duration,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: Math.random() * 5 // Délai aléatoire pour ne pas qu'elles partent toutes en même temps
+            delay: Math.random() * 5 
           }}
         />
       ))}
