@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { client } from "@/lib/sanity"
 import Quiz from "@/components/Quiz"
 import Hero from "@/components/Hero"
-import HomeContent from "@/components/HomeContent" // <--- Import
+import HomeContent from "@/components/HomeContent"
+import Footer from "@/components/Footer" // <--- 1. IMPORT ICI
 
 export default function Home() {
   const [questions, setQuestions] = useState<any[]>([])
@@ -19,17 +20,18 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-black"> {/* bg-black pour être raccord */}
+    <main className="min-h-screen bg-black">
       
-      {/* VUE 1 : ACCUEIL (Hero + Contenu) */}
+      {/* VUE 1 : ACCUEIL */}
       {view === 'hero' && (
         <div className="animate-in fade-in duration-500">
           <Hero onStart={() => setView('quiz')} />
           <HomeContent />
+          <Footer /> {/* <--- 2. AJOUTE LE COMME ÇA */}
         </div>
       )}
 
-      {/* VUE 2 : QUIZ (Plein écran) */}
+      {/* VUE 2 : QUIZ */}
       {view === 'quiz' && (
         <div className="animate-in fade-in duration-700 fixed inset-0 z-50 bg-black">
           {questions.length > 0 ? (

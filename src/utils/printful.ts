@@ -1,4 +1,6 @@
-const PRINTFUL_API_URL = 'https://api.printful.com'
+// src/utils/printful.ts
+
+const PRINTFUL_API_URL = 'https://api.printful.com';
 
 function shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -8,38 +10,36 @@ function shuffleArray(array: any[]) {
     return array;
 }
 
-export async function getPrintfulProductsRandom3() {
+// Nouvelle fonction : On récupère TOUT le catalogue
+export async function getAllPrintfulProducts() {
   const token = process.env.PRINTFUL_ACCESS_TOKEN;
 
   if (!token) return null;
 
   try {
-    // 1. On récupère un maximum de produits (ex: 50) pour avoir un bon mélange
+    // On demande jusqu'à 100 produits pour être tranquille
     const res = await fetch(
-      `${PRINTFUL_API_URL}/store/products?limit=50`, 
+      `${PRINTFUL_API_URL}/store/products?limit=100`, 
       {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        next: { revalidate: 0 } 
+        next: { revalidate: 60 } // Cache d'une minute
       }
     );
 
     if (!res.ok) throw new Error('Erreur Printful API');
-
     const data = await res.json();
     let products = data.result;
 
     if (!products || products.length === 0) return null;
 
-    // 2. On mélange le tableau de résultats
+    // On mélange tout pour le fun
     products = shuffleArray(products);
 
-    // 3. On ne garde que les 3 premiers
-    const selectedProducts = products.slice(0, 3);
-
-    return selectedProducts.map((p: any) => ({
+    // On retourne TOUT (pas de .slice ici)
+    return products.map((p: any) => ({
       id: p.id,
       name: p.name,
       image: p.thumbnail_url,
