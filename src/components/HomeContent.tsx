@@ -1,9 +1,35 @@
 'use client'
-import { motion } from 'framer-motion'
 
-export default function HomeContent() {
+import { useRef } from 'react'
+import { motion } from 'framer-motion'
+import ProductDisplay from "@/components/ProductDisplay"
+
+// Icônes Flèches pour le slider
+const ArrowLeft = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+  </svg>
+)
+const ArrowRight = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+  </svg>
+)
+
+export default function HomeContent({ products }: { products?: any[] }) {
+  
+  const sliderRef = useRef<HTMLDivElement>(null)
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (sliderRef.current) {
+        const { current } = sliderRef;
+        const scrollAmount = direction === 'left' ? -350 : 350;
+        current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
+
   return (
-    <div className="bg-black text-white relative z-50">
+    <div className="bg-black text-white relative z-50 overflow-hidden">
       
       {/* SECTION 1: THE PROBLEM */}
       <section className="py-24 px-6 container mx-auto max-w-4xl text-center">
@@ -63,10 +89,10 @@ export default function HomeContent() {
         </div>
       </section>
 
-      {/* SECTION 3: THE 7 PERCEPTUAL MODES (Updated Titles) */}
+      {/* SECTION 3: THE 7 PERCEPTUAL MODES */}
       <section className="py-24 px-6 bg-white/5">
         <div className="container mx-auto max-w-5xl">
-          <h2 className="text-4xl font-serif text-center mb-16">The 7 Perceptual Modes</h2>
+          <h2 className="text-4xl font-serif text-center mb-16">7 Lens</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -94,6 +120,53 @@ export default function HomeContent() {
           </div>
         </div>
       </section>
+
+      {/* --- NOUVELLE SECTION SHOP (CARROUSEL) --- */}
+      <div className="py-24 border-t border-white/10">
+            <div className="text-center mb-16 px-4">
+                <span className="text-yellow-300 uppercase tracking-[0.3em] text-xs font-bold mb-4 block">
+                    The Collection
+                </span>
+                <h2 className="text-4xl md:text-6xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500">
+                    Wear Your Truth
+                </h2>
+            </div>
+
+            <div className="relative group/slider max-w-7xl mx-auto">
+                {/* Flèche Gauche */}
+                <button 
+                    onClick={() => scroll('left')}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 p-3 rounded-full bg-black/50 border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-300 hidden md:flex"
+                >
+                    <ArrowLeft />
+                </button>
+
+                {/* Slider */}
+                <div 
+                    ref={sliderRef}
+                    className="flex overflow-x-auto gap-8 pb-12 px-4 snap-x snap-mandatory scrollbar-hide items-stretch"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                    {products && products.map((product, index) => (
+                         <div key={product.id || index} className="min-w-[85vw] md:min-w-[350px] snap-center">
+                            <ProductDisplay product={product} delay={index * 0.1} />
+                         </div>
+                    ))}
+                </div>
+
+                {/* Flèche Droite */}
+                <button 
+                    onClick={() => scroll('right')}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 p-3 rounded-full bg-black/50 border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-300 hidden md:flex"
+                >
+                    <ArrowRight />
+                </button>
+            </div>
+            
+             <div className="md:hidden text-center text-white/20 text-[10px] uppercase tracking-widest mt-[-20px] animate-pulse">
+                Swipe to explore
+            </div>
+      </div>
 
     </div>
   )

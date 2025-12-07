@@ -1,92 +1,104 @@
+// src/components/ProductDisplay.tsx
 'use client'
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 
-interface Product {
-  id: string
-  name: string
-  image: string
-  url: string
+interface ProductDisplayProps {
+  product: {
+    id: string
+    name: string
+    image: string
+    url: string
+  }
+  delay?: number
 }
 
-export default function ProductDisplay({ product, delay = 0 }: { product: Product, delay?: number }) {
-  if (!product) return null
+export default function ProductDisplay({ product, delay = 0 }: ProductDisplayProps) {
+  
+  // Fonction pour générer le texte dynamique du bouton
+  const getButtonText = (name: string) => {
+    const lowerName = name.toLowerCase()
+    
+    if (lowerName.includes('hoodie')) {
+      return "Buy Your Hoodie"
+    }
+    if (lowerName.includes('tee') || lowerName.includes('t-shirt') || lowerName.includes('shirt')) {
+      return "Buy Your T-Shirt"
+    }
+    if (lowerName.includes('sweatshirt')) {
+        return "Buy Your Sweatshirt"
+    }
+    
+    // Fallback par défaut si le type n'est pas reconnu
+    return "Buy Yours"
+  }
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut", delay: delay }}
-      className="relative w-full max-w-sm mx-auto group h-full"
+      transition={{ delay: delay, duration: 0.6 }}
+      className="group relative flex flex-col items-center"
     >
-      {/* Halo doré derrière la carte au survol */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-gold-500/0 via-gold-500/20 to-gold-500/0 rounded-[2rem] blur-md opacity-0 group-hover:opacity-100 transition duration-1000" />
-
-      {/* La Carte : Fond noir semi-transparent */}
-      <div className="relative bg-[#0a0a0a] border border-white/10 rounded-[2rem] overflow-hidden hover:border-gold-500/30 transition-colors duration-500 shadow-2xl flex flex-col h-full">
+      {/* CARTE PRODUIT */}
+      <div className="relative w-full aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-b from-gray-900 to-black border border-white/10 group-hover:border-gold-500/50 transition-all duration-500 shadow-2xl">
         
-        {/* Zone Image */}
-        <div className="relative h-72 w-full flex items-center justify-center p-6 bg-gradient-to-b from-white/5 to-transparent overflow-hidden">
-          
-          {/* Lueur d'ambiance */}
-          <div className="absolute w-40 h-40 bg-white/5 rounded-full blur-[40px] group-hover:bg-gold-500/5 transition-colors duration-700" />
-          
-          <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-700 ease-in-out z-10">
-             <Image 
-                src={product.image} 
-                alt={product.name}
-                fill
-                className="object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
-              />
-          </div>
-
-          {/* --- BADGE NEW! STYLE "DARK GLASS" --- */}
-          <div className="absolute top-5 right-5 z-20">
-             <div className="relative bg-black/40 backdrop-blur-md border border-gold-500/30 px-4 py-2 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] group-hover:border-gold-500/60 transition-colors duration-500">
-                {/* Petit point lumineux pour attirer l'oeil */}
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-gold-500"></span>
-                </span>
-                
-                <span className="font-serif italic font-bold text-sm text-gold-100 tracking-wider drop-shadow-sm">
-                    New
-                </span>
-             </div>
-          </div>
-          {/* ----------------------------------- */}
-
+        {/* IMAGE */}
+        <div className="absolute inset-0 p-4">
+            <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                {product.image ? (
+                    <Image 
+                        src={product.image} 
+                        alt={product.name}
+                        fill
+                        className="object-contain drop-shadow-2xl"
+                        sizes="(max-width: 768px) 100vw, 350px"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-white/5 text-white/20">
+                        No Image
+                    </div>
+                )}
+            </div>
         </div>
 
-        {/* Zone Information */}
-        <div className="p-6 text-center bg-black/40 border-t border-white/5 relative z-10 flex flex-col flex-grow justify-between">
-          <div className="mb-6">
-            <h3 className="text-lg font-serif text-white mb-3 tracking-wide leading-tight line-clamp-2 h-[3.5rem] flex items-center justify-center">
-                {product.name}
-            </h3>
-            
-            <p className="text-white/30 text-[10px] uppercase tracking-[0.25em] block font-light">
-               Limited Edition
-            </p>
-          </div>
-          
-          <a 
-            href={product.url}
-            target={product.url === '#' ? '_self' : '_blank'}
-            rel="noopener noreferrer"
-            className={`group/btn relative inline-flex items-center justify-center w-full py-3.5 overflow-hidden font-bold rounded-xl bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(212,175,55,0.2)] ${product.url === '#' ? 'opacity-60 cursor-not-allowed bg-gray-200' : ''}`}
-          >
-            <span className="relative z-10 uppercase tracking-[0.2em] text-[11px] group-hover/btn:text-black">
-                {product.url === '#' ? 'Coming Soon' : 'Acquire Artifact'}
+        {/* BADGE "ALREADY MADE" (Ex-Limited Edition) - RENDU LISIBLE */}
+        <div className="absolute top-4 left-4 z-10">
+            <span className="inline-block px-3 py-1 bg-black/80 backdrop-blur-md border border-white/20 rounded text-[10px] uppercase tracking-[0.2em] text-white font-medium shadow-lg">
+                Been there, doing  that
             </span>
-            {product.url !== '#' && (
-                <div className="absolute inset-0 h-full w-full scale-0 rounded-xl transition-all duration-300 group-hover/btn:scale-100 group-hover/btn:bg-gold-300/20" />
-            )}
-          </a>
+        </div>
+
+        {/* OVERLAY AU SURVOL */}
+        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <Link 
+                href={product.url} 
+                target="_blank"
+                className="inline-block px-8 py-3 bg-gold-500 text-black font-bold uppercase tracking-widest text-xs hover:bg-white transition-colors duration-300 transform translate-y-4 group-hover:translate-y-0"
+            >
+                View Details
+            </Link>
         </div>
       </div>
+
+      {/* TITRE ET BOUTON ACTION */}
+      <div className="mt-6 text-center w-full">
+        <h3 className="text-lg font-serif text-white/90 mb-4 truncate w-full px-2">
+            {product.name}
+        </h3>
+        
+        <Link 
+            href={product.url}
+            target="_blank"
+            className="w-full block py-4 border border-white/20 hover:border-gold-500 bg-white/5 hover:bg-gold-500/10 text-gold-300 hover:text-gold-100 uppercase tracking-[0.2em] text-xs transition-all duration-300 rounded-lg"
+        >
+            {getButtonText(product.name)}
+        </Link>
+      </div>
+
     </motion.div>
   )
 }

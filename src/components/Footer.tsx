@@ -16,7 +16,7 @@ export default function Footer() {
             href="/about" 
             className="text-yellow-300 font-serif text-xl hover:text-white transition-all transform hover:scale-105 flex items-center gap-2 group"
           >
-            <span>About Vee John Baptiste</span>
+            <span>About this work</span>
             <span className="opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
