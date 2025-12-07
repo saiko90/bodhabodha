@@ -1,3 +1,4 @@
+// src/components/HomeContent.tsx
 'use client'
 
 import { useRef } from 'react'
@@ -16,7 +17,8 @@ const ArrowRight = () => (
   </svg>
 )
 
-export default function HomeContent({ products }: { products?: any[] }) {
+// CORRECTION ICI : On ajoute content et lenses dans les props acceptées
+export default function HomeContent({ products, content, lenses }: { products?: any[], content?: any, lenses?: any[] }) {
   
   const sliderRef = useRef<HTMLDivElement>(null)
 
@@ -27,6 +29,29 @@ export default function HomeContent({ products }: { products?: any[] }) {
         current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   }
+
+  // Fallbacks (Textes par défaut si Sanity est vide)
+  const t = {
+    problemTitle: content?.problemTitle || "The patterns repeat even after years of deep work.",
+    problemText: content?.problemText || "This is what people say. They have done the work—therapy, recovery programs, plant medicine, spiritual practice. The work has value. The work matters.",
+    problemHighlight: content?.problemHighlight || "What shifts everything is consciousness itself.",
+    philosophyTitle: content?.philosophyTitle || "Light Creates Movement",
+    philosophyText: content?.philosophyText || "Your own fixed frames begin to shift when light is shed on your relational dynamics. When consciousness illuminates the actual shape of your perception."
+  }
+
+  // Liste des lentilles par défaut (Fallback)
+  const defaultLenses = [
+      { color: "bg-red-500", name: "Red Thread", desc: "Following the thread of pattern. Learning to focus. Something has shifted." },
+      { color: "bg-orange-500", name: "Orange Juice", desc: "Everything feels fresh and alive. Chemistry creates clarity. Possibility opens." },
+      { color: "bg-yellow-500", name: "Yellow Mellow", desc: "Reality settles in. What attracted now reveals complexity. Patterns repeat." },
+      { color: "bg-green-500", name: "Green Scene", desc: "The full picture emerges. Questions multiply. Confusion meets curiosity." },
+      { color: "bg-blue-500", name: "True Blue", desc: "Building from within. Authentic expression. Inner work deepens." },
+      { color: "bg-indigo-500", name: "Indi Gogo", desc: "Abstract vision and practical action flow freely. Inner and outer dialogue move naturally." },
+      { color: "bg-white", name: "White Light", desc: "Clear sight. Natural presence. Being becomes teaching.", text: "text-black" },
+  ];
+
+  // Si 'lenses' vient de Sanity, on l'utilise, sinon on prend la liste par défaut
+  const lensesDisplay = (lenses && lenses.length > 0) ? lenses : defaultLenses;
 
   return (
     <div className="bg-black text-white relative z-50 overflow-hidden">
@@ -40,15 +65,13 @@ export default function HomeContent({ products }: { products?: any[] }) {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-3xl md:text-5xl font-serif text-yellow-300 mb-8">
-            The patterns repeat even after years of deep work.
+            {t.problemTitle}
           </h2>
-          <p className="text-xl text-gray-400 leading-relaxed mb-6">
-            This is what people say. They have done the work—therapy, recovery programs, plant medicine, spiritual practice. The work has value. The work matters.
+          <p className="text-xl text-gray-400 leading-relaxed mb-6 whitespace-pre-wrap">
+            {t.problemText}
           </p>
           <p className="text-xl text-white font-light leading-relaxed">
-            And still: the same types. The same draining of time and vital energy. The same sense that something fundamental remains unchanged.
-            <br/><br/>
-            <strong>What shifts everything is consciousness itself.</strong>
+            <strong>{t.problemHighlight}</strong>
           </p>
         </motion.div>
       </section>
@@ -66,9 +89,9 @@ export default function HomeContent({ products }: { products?: any[] }) {
             <h3 className="text-sm font-bold tracking-[0.2em] text-teal-500 uppercase mb-4">
               The Philosophy
             </h3>
-            <h2 className="text-4xl font-serif mb-6">Light Creates Movement</h2>
-            <p className="text-gray-400 mb-4">
-              Your own fixed frames begin to shift when light is shed on your relational dynamics. When consciousness illuminates the actual shape of your perception.
+            <h2 className="text-4xl font-serif mb-6">{t.philosophyTitle}</h2>
+            <p className="text-gray-400 mb-4 whitespace-pre-wrap">
+              {t.philosophyText}
             </p>
             <p className="text-gray-400">
               <strong>BODHABODHA</strong> does not fix your vision. It shows you which <strong>perceptual mode</strong> you are using. It reveals the shape of your current perception.
@@ -95,15 +118,7 @@ export default function HomeContent({ products }: { products?: any[] }) {
           <h2 className="text-4xl font-serif text-center mb-16">7 Lens</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { color: "bg-red-500", name: "Red Thread", desc: "Following the thread of pattern. Learning to focus. Something has shifted." },
-              { color: "bg-orange-500", name: "Orange Juice", desc: "Everything feels fresh and alive. Chemistry creates clarity. Possibility opens." },
-              { color: "bg-yellow-500", name: "Yellow Mellow", desc: "Reality settles in. What attracted now reveals complexity. Patterns repeat." },
-              { color: "bg-green-500", name: "Green Scene", desc: "The full picture emerges. Questions multiply. Confusion meets curiosity." },
-              { color: "bg-blue-500", name: "True Blue", desc: "Building from within. Authentic expression. Inner work deepens." },
-              { color: "bg-indigo-500", name: "Indi Gogo", desc: "Abstract vision and practical action flow freely. Inner and outer dialogue move naturally." },
-              { color: "bg-white", name: "White Light", desc: "Clear sight. Natural presence. Being becomes teaching.", text: "text-black" },
-            ].map((lens, i) => (
+            {lensesDisplay.map((lens: any, i: number) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -112,9 +127,10 @@ export default function HomeContent({ products }: { products?: any[] }) {
                 transition={{ delay: i * 0.1 }}
                 className="p-6 rounded-2xl bg-black border border-white/10 hover:border-white/30 transition-colors"
               >
-                <div className={`w-4 h-4 rounded-full ${lens.color} mb-4 shadow-[0_0_10px_currentColor]`} />
+                {/* On utilise lens.color s'il existe, sinon une couleur par défaut */}
+                <div className={`w-4 h-4 rounded-full ${lens.color || 'bg-white'} mb-4 shadow-[0_0_10px_currentColor]`} />
                 <h3 className="text-xl font-bold mb-2">{lens.name}</h3>
-                <p className="text-sm text-gray-400">{lens.desc}</p>
+                <p className="text-sm text-gray-400">{lens.description || lens.desc}</p>
               </motion.div>
             ))}
           </div>

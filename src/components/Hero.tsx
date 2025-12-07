@@ -1,9 +1,12 @@
+// src/components/Hero.tsx
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-export default function Hero({ onStart }: { onStart: () => void }) {
+// CORRECTION ICI : On ajoute "subtitle?: string" pour accepter le texte de Sanity
+export default function Hero({ onStart, subtitle }: { onStart: () => void, subtitle?: string }) {
+  
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const videoRef = useRef<HTMLVideoElement>(null)
   
@@ -24,7 +27,9 @@ export default function Hero({ onStart }: { onStart: () => void }) {
     }
   }, []);
 
-  const subtitleText = "BODHABODHA reveals how you have been seeing—the unconscious patterns shaping every relationship in your life. When you see clearly—when awareness awakens—you relate from consciousness rather than conditioning.";
+  // ICI : On utilise le texte reçu de Sanity (subtitle), SINON on met le texte par défaut
+  const textToShow = subtitle || "BODHABODHA reveals how you have been seeing—the unconscious patterns shaping every relationship in your life. When you see clearly—when awareness awakens—you relate from consciousness rather than conditioning.";
+  
   const commonTextStyle = "text-lg md:text-xl font-semibold leading-relaxed";
 
   return (
@@ -67,7 +72,7 @@ export default function Hero({ onStart }: { onStart: () => void }) {
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10 pointer-events-none">
              <div className="max-w-4xl mt-40"> 
                 <p className={`${commonTextStyle} text-white drop-shadow-[0_0_25px_rgba(255,255,255,1)]`}>
-                    {subtitleText}
+                    {textToShow}
                 </p>
              </div>
           </div>
@@ -116,7 +121,7 @@ export default function Hero({ onStart }: { onStart: () => void }) {
 
                 {/* Texte Noir */}
                 <p className={`${commonTextStyle} text-gray-900`}>
-                    {subtitleText}
+                    {textToShow}
                 </p>
              </div>
           </div>
