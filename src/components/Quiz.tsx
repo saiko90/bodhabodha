@@ -1,142 +1,130 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { calculateResult, CalculationResult } from '@/utils/scoring'
-import EmailGate from './EmailGate'
-import Fireflies from './Fireflies'
 
-export default function Quiz({ questions }: { questions: any[] }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
+interface QuizProps {
+  questions: any[]
+}
+
+export default function Quiz({ questions }: QuizProps) {
   const router = useRouter()
-  const [answers, setAnswers] = useState<string[]>([])
-  const [pendingResult, setPendingResult] = useState<CalculationResult | null>(null)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [scores, setScores] = useState<Record<string, number>>({})
+  const [isExiting, setIsExiting] = useState(false)
 
-  const currentQuestion = questions[currentIndex]
-  const progress = ((currentIndex + 1) / questions.length) * 100
+  const currentQuestion = questions[currentQuestionIndex]
 
-  const handleAnswer = (stage: string) => {
-    const newAnswers = [...answers, stage]
-    setAnswers(newAnswers)
+  // --- CORRECTION ICI ---
+  // On mélange les réponses à chaque fois que la QUESTION change (données ou index)
+  const shuffledAnswers = useMemo(() => {
+    if (!currentQuestion?.answers) return []
 
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1)
+    // Copie pour ne pas muter l'original
+    const mixed = [...currentQuestion.answers]
+    
+    // Mélange
+    return mixed.sort(() => Math.random() - 0.5)
+    
+  }, [currentQuestion]) // <--- On surveille currentQuestion au lieu de l'index
+  // ----------------------
+
+  const handleAnswer = (answer: any) => {
+    // Sécurisation du type de réponse
+    const lensType = answer.lens || answer.type || answer.value || "unknown"
+
+    setScores(prev => ({
+      ...prev,
+      [lensType]: (prev[lensType] || 0) + 1
+    }))
+
+    // Passer à la question suivante ou finir
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1)
     } else {
-      // C'est fini : On lance le calcul
-      const final = calculateResult(newAnswers)
-      
-      // LOGIQUE DE ROUTAGE INTELLIGENTE
-      let targetSlug = final.primaryStage;
-
-      // Cas 1 : Faible confiance -> Multiple Perspectives
-      if (final.confidence < 50) {
-        targetSlug = 'multiple';
-      }
-      // Cas 2 : Transition détectée -> Slug combiné (ex: red-orange)
-      else if (final.isTransition && final.secondaryStage) {
-        // On construit le slug combiné. 
-        // Attention : l'ordre doit correspondre à tes slugs dans Sanity (ex: toujours 'red-orange', jamais 'orange-red')
-        // Mon script d'import suit l'ordre logique des chakras/couleurs.
-        // Comme ta fonction 'calculateResult' trie par score, on doit s'assurer de l'ordre.
-        
-        // Pour simplifier, on va faire une map des transitions connues
-        const transitionMap: {[key: string]: string} = {
-            'red-orange': 'red-orange', 'orange-red': 'red-orange',
-            'orange-yellow': 'orange-yellow', 'yellow-orange': 'orange-yellow',
-            'yellow-green': 'yellow-green', 'green-yellow': 'yellow-green',
-            'green-trueblue': 'green-trueblue', 'trueblue-green': 'green-trueblue',
-            'trueblue-indigogo': 'trueblue-indigogo', 'indigogo-trueblue': 'trueblue-indigogo',
-            'indigogo-whitelight': 'indigogo-whitelight', 'whitelight-indigogo': 'indigogo-whitelight'
-        };
-        
-        const combo = `${final.primaryStage}-${final.secondaryStage}`;
-        if (transitionMap[combo]) {
-            targetSlug = transitionMap[combo];
-        }
-      }
-
-      // On sauvegarde l'objet complet avec le bon slug corrigé
-      const finalWithSlug = { ...final, slug: targetSlug };
-      
-      localStorage.setItem('aware_result', JSON.stringify(finalWithSlug))
-      setPendingResult(finalWithSlug) // Affiche le Gate avec le bon slug
+      finishQuiz()
     }
   }
 
-  // --- RENDU ---
+  const finishQuiz = () => {
+    setIsExiting(true)
+    
+    // Calcul du gagnant (celui avec le plus haut score)
+    let winner = 'unknown';
+    if (Object.keys(scores).length > 0) {
+        winner = Object.entries(scores).reduce((a, b) => (a[1] > b[1] ? a : b))[0]
+    }
+    
+    // Sauvegarde
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('bodha_result', winner)
+    }
+
+    // Redirection
+    setTimeout(() => {
+      router.push(`/result/${winner}`)
+    }, 500)
+  }
+
+  // Loading state si pas de données
+  if (!currentQuestion) return (
+    <div className="flex h-[50vh] items-center justify-center text-white/50">
+        Loading...
+    </div>
+  )
 
   return (
-    // FOND GÉNÉRAL (Jardin Flouté)
-    <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4">
+    <div className="w-full max-w-2xl mx-auto p-6 flex flex-col items-center justify-center min-h-[50vh]">
       
-      {/* Image de fond fixe */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src="/images/bg-fond2.jpg" 
-          className="w-full h-full object-cover blur-sm brightness-50 scale-110" // Flou + Sombre
-          alt="Background" 
+      {/* Barre de progression */}
+      <div className="w-full bg-gray-800 h-1 mb-12 rounded-full overflow-hidden">
+        <motion.div 
+          className="h-full bg-yellow-400"
+          initial={{ width: 0 }}
+          animate={{ width: `${((currentQuestionIndex) / questions.length) * 100}%` }}
+          transition={{ duration: 0.5 }}
         />
-        <div className="absolute inset-0 bg-black/40" /> {/* Filtre noir supplémentaire */}
       </div>
 
-      {/* Lucioles Magiques */}
-      <Fireflies />
-
-      {/* CONTENU PRINCIPAL (Au dessus) */}
-      <div className="relative z-10 w-full max-w-2xl">
-        
-        {/* Si fini, on affiche le Gate, sinon le Quiz */}
-        {pendingResult ? (
-           <EmailGate resultSlug={pendingResult.primaryStage} />
-        ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/20"
+      <AnimatePresence mode='wait'>
+        {!isExiting && (
+          <motion.div
+            key={currentQuestionIndex}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="w-full"
           >
-            {/* Barre de progression */}
-            <div className="w-full bg-gray-200/50 h-2">
-              <motion.div 
-                className="bg-gradient-to-r from-teal-500 to-green-500 h-2" 
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-              />
-            </div>
+            {/* Question */}
+            <h2 className="text-2xl md:text-4xl font-serif text-white mb-12 text-center leading-relaxed">
+              {currentQuestion.text}
+            </h2>
 
-            <div className="p-8 md:p-12 pb-32">
-              <div className="mb-10 text-center">
-                <span className="text-xs font-bold tracking-[0.2em] text-teal-700 uppercase opacity-70">
-                  Question {currentIndex + 1} / {questions.length}
-                </span>
-                <h2 className="text-2xl md:text-3xl font-serif font-medium mt-4 text-gray-900 leading-snug">
-                  {currentQuestion.text}
-                </h2>
-              </div>
-
-              <div className="space-y-4">
-                <AnimatePresence mode='wait'>
-                  {currentQuestion.answers.map((ans: any, index: number) => (
-                    <motion.button
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      onClick={() => handleAnswer(ans.stage)}
-                      className="w-full text-left p-5 rounded-xl bg-white/50 border border-gray-200 hover:border-teal-500 hover:bg-teal-50 hover:shadow-md transition-all duration-300 group"
-                    >
-                      <span className="text-gray-700 group-hover:text-teal-900 font-medium text-lg">
-                        {ans.text}
-                      </span>
-                    </motion.button>
-                  ))}
-                </AnimatePresence>
-              </div>
+            {/* Réponses (Mélangées) */}
+            <div className="grid grid-cols-1 gap-4">
+              {shuffledAnswers.map((answer: any, index: number) => (
+                <motion.button
+                  // Utilise answer._key si dispo pour aider React, sinon index
+                  key={answer._key || index} 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  onClick={() => handleAnswer(answer)}
+                  className="p-6 text-left rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-yellow-300/50 hover:text-yellow-100 transition-all duration-300 group"
+                >
+                  <span className="inline-block w-8 h-8 rounded-full border border-white/20 text-xs flex items-center justify-center mr-4 group-hover:bg-yellow-400 group-hover:text-black transition-colors">
+                    {String.fromCharCode(65 + index)} {/* A, B, C... */}
+                  </span>
+                  <span className="text-lg font-light">{answer.text}</span>
+                </motion.button>
+              ))}
             </div>
           </motion.div>
         )}
-        
-      </div>
+      </AnimatePresence>
+
     </div>
   )
 }
